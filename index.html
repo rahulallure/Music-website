@@ -1,0 +1,817 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chai Ki Tapri — A little escape</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --cream: #f2e7d4;
+  --muted: #a79a88;
+  --accent: #d8a66a;
+  --dark: #100e0b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--dark);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  overflow-x: hidden;
+}
+
+.background {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(180deg, rgba(12,10,8,.35), rgba(12,10,8,.78)),
+    url('https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=2000&q=85')
+    center/cover;
+  filter: brightness(.65) saturate(.7);
+}
+
+.background::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 5%, #100e0b 100%);
+}
+
+.top {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  right: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.live {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: #b6c79b;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #b6c79b;
+}
+
+main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 75px;
+  text-align: center;
+}
+
+h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(42px, 8vw, 76px);
+  font-weight: 500;
+  letter-spacing: -2px;
+  margin: 0 0 10px;
+  text-shadow: 0 4px 30px #000;
+}
+
+.subtitle {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 35px;
+}
+
+.player {
+  width: min(360px, 92vw);
+  padding: 25px;
+  border: 1px solid #ffffff20;
+  border-radius: 4px;
+  background: rgba(20,17,13,.82);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 20px 80px #0008;
+}
+
+.player-top {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+}
+
+.album {
+  width: 110px;
+  height: 110px;
+  margin: auto;
+  border: 1px solid #ffffff30;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, #d8a66a 0 4%, #5c3c25 5% 20%, #1d1915 21% 100%);
+  box-shadow: 0 0 40px #d8a66a18;
+}
+
+.album::after {
+  content: "";
+  width: 13px;
+  height: 13px;
+  background: var(--cream);
+  border-radius: 50%;
+}
+
+.album.playing {
+  animation: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.youtube-container {
+  display: none;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000;
+  margin: 0 auto 18px;
+}
+
+.youtube-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+#youtubePlayer {
+  width: 100%;
+  height: 100%;
+}
+
+.track {
+  margin: 25px 0 8px;
+  font-family: 'Playfair Display', serif;
+  font-size: 19px;
+  overflow-wrap: anywhere;
+}
+
+.artist {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.status {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 12px;
+  min-height: 25px;
+  overflow-wrap: anywhere;
+}
+
+.progress {
+  margin: 24px 0 8px;
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  color: var(--muted);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin: 22px 0;
+}
+
+button {
+  border: 0;
+  background: none;
+  color: var(--cream);
+  cursor: pointer;
+  font: inherit;
+}
+
+.play {
+  width: 52px;
+  height: 52px;
+  border: 1px solid #d8a66a80;
+  border-radius: 50%;
+  color: var(--accent);
+  font-size: 18px;
+}
+
+.play:hover {
+  background: var(--accent);
+  color: var(--dark);
+}
+
+.small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.small.active {
+  color: var(--accent);
+}
+
+.upload {
+  display: block;
+  margin: 14px auto 0;
+  color: var(--muted);
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.upload:hover {
+  color: var(--cream);
+}
+
+.url-form {
+  display: flex;
+  gap: 6px;
+  margin-top: 15px;
+}
+
+.url-form input {
+  width: 100%;
+  min-width: 0;
+  background: #ffffff08;
+  border: 1px solid #ffffff20;
+  padding: 10px;
+  color: var(--cream);
+  outline: none;
+  font: 10px 'DM Mono', monospace;
+}
+
+.url-form button {
+  border: 1px solid #ffffff30;
+  padding: 0 14px;
+  font-size: 10px;
+  color: var(--accent);
+}
+
+.footer {
+  position: absolute;
+  bottom: 24px;
+  width: 100%;
+  text-align: center;
+  color: #b9aa96;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+@media(max-width: 600px) {
+  .top {
+    top: 20px;
+    left: 15px;
+    right: 15px;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  main { padding-top: 85px; }
+
+  .subtitle {
+    font-size: 9px;
+    margin-bottom: 25px;
+  }
+
+  .player { padding: 20px; }
+}
+
+@media(max-height: 700px) {
+  main { padding-top: 70px; padding-bottom: 60px; }
+  .subtitle { margin-bottom: 18px; }
+  .player { padding: 17px; }
+  .album { width: 80px; height: 80px; }
+  .track { margin-top: 15px; }
+  .progress { margin-top: 15px; }
+  .controls { margin: 14px 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+
+<div class="top">
+  <span>EST. AFTER HOURS</span>
+  <div class="live">
+    <span class="dot"></span>
+    <span id="listeners">142 people chilling here right now</span>
+  </div>
+</div>
+
+<main>
+  <h1>Chai Ki Tapri</h1>
+  <div class="subtitle">A little escape from everything</div>
+
+  <section class="player">
+
+    <div class="player-top">
+      <span>NOW PLAYING</span>
+      <span>01 / TAPRI FM</span>
+    </div>
+
+    <div class="album" id="album"></div>
+
+    <div class="youtube-container" id="youtubeContainer">
+      <div id="youtubePlayer"></div>
+    </div>
+
+    <div class="track" id="track">Midnight Chai</div>
+    <div class="artist" id="artist">SOMEWHERE IN INDIA</div>
+    <div class="status" id="status">Ready for a chai break.</div>
+
+    <audio id="audio" preload="metadata"></audio>
+
+    <input class="progress" id="progress"
+      type="range" min="0" max="100" value="0">
+
+    <div class="times">
+      <span id="current">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+
+    <div class="controls">
+      <button class="small active" id="loop">↻</button>
+      <button class="play" id="play">▶</button>
+      <button class="small" id="mute">♪</button>
+    </div>
+
+    <label class="upload">
+      + ADD YOUR OWN AUDIO
+      <input id="file" type="file" accept="audio/*" hidden>
+    </label>
+
+    <form class="url-form" id="urlForm">
+      <input id="url" type="url"
+        placeholder="Paste YouTube or audio URL" required>
+      <button type="submit">LOAD</button>
+    </form>
+
+  </section>
+</main>
+
+<div class="footer">
+  CHAI OVER EVERYTHING · TAKE YOUR TIME
+</div>
+
+<script>
+'use strict';
+
+const audio = document.getElementById('audio');
+const playButton = document.getElementById('play');
+const album = document.getElementById('album');
+const progress = document.getElementById('progress');
+const current = document.getElementById('current');
+const duration = document.getElementById('duration');
+const statusText = document.getElementById('status');
+const youtubeContainer = document.getElementById('youtubeContainer');
+
+let youtubePlayer = null;
+let youtubeReady = false;
+let apiReady = false;
+let pendingVideoId = null;
+let currentSource = 'audio';
+let muted = false;
+let looping = true;
+let audioObjectURL = null;
+
+function setStatus(message) {
+  statusText.textContent = message;
+}
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return '0:00';
+
+  return Math.floor(seconds / 60) + ':' +
+    String(Math.floor(seconds % 60)).padStart(2, '0');
+}
+
+function setPlaying(playing) {
+  playButton.textContent = playing ? 'Ⅱ' : '▶';
+  album.classList.toggle(
+    'playing',
+    playing && currentSource === 'audio'
+  );
+}
+
+function resetProgress() {
+  progress.value = 0;
+  current.textContent = '0:00';
+  duration.textContent = '0:00';
+}
+
+function getYouTubeId(url) {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, '');
+    let id = null;
+
+    if (host === 'youtu.be') {
+      id = parsed.pathname.split('/')[1];
+    }
+
+    if (
+      host === 'youtube.com' ||
+      host === 'm.youtube.com' ||
+      host === 'youtube-nocookie.com'
+    ) {
+      if (parsed.pathname === '/watch') {
+        id = parsed.searchParams.get('v');
+      } else {
+        const match = parsed.pathname.match(
+          /^\/(?:embed|shorts|live)\/([^/]+)/
+        );
+
+        if (match) id = match[1];
+      }
+    }
+
+    return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
+
+  } catch (error) {
+    return null;
+  }
+}
+
+function releaseAudioURL() {
+  if (audioObjectURL) {
+    URL.revokeObjectURL(audioObjectURL);
+    audioObjectURL = null;
+  }
+}
+
+function stopAudio() {
+  audio.pause();
+  audio.removeAttribute('src');
+  audio.load();
+  releaseAudioURL();
+}
+
+function destroyYouTube() {
+  if (youtubePlayer) {
+    try {
+      youtubePlayer.destroy();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  youtubePlayer = null;
+  youtubeReady = false;
+  document.getElementById('youtubePlayer').innerHTML = '';
+  youtubeContainer.style.display = 'none';
+}
+
+function loadYouTube(videoId) {
+  stopAudio();
+  destroyYouTube();
+
+  currentSource = 'youtube';
+  pendingVideoId = videoId;
+
+  resetProgress();
+  setPlaying(false);
+
+  album.style.display = 'none';
+  youtubeContainer.style.display = 'block';
+
+  document.getElementById('track').textContent = 'YouTube Session';
+  document.getElementById('artist').textContent = 'TAPRI RADIO';
+
+  setStatus('Connecting to YouTube...');
+
+  if (apiReady) createYouTubePlayer(videoId);
+}
+
+function createYouTubePlayer(videoId) {
+  if (!apiReady || !pendingVideoId ||
+      pendingVideoId !== videoId ||
+      currentSource !== 'youtube') return;
+
+  youtubeReady = false;
+
+  youtubePlayer = new YT.Player('youtubePlayer', {
+    width: '100%',
+    height: '100%',
+    videoId: videoId,
+
+    playerVars: {
+      autoplay: 0,
+      controls: 1,
+      playsinline: 1,
+      rel: 0,
+      loop: looping ? 1 : 0,
+      playlist: videoId
+    },
+
+    events: {
+      onReady: function(event) {
+        youtubeReady = true;
+        event.target.setVolume(muted ? 0 : 100);
+        setStatus('Video ready. Press play to listen.');
+        setPlaying(false);
+      },
+
+      onStateChange: function(event) {
+        if (event.data === YT.PlayerState.PLAYING) {
+          setPlaying(true);
+          setStatus('Now playing · Tapri FM');
+        } else if (event.data === YT.PlayerState.PAUSED) {
+          setPlaying(false);
+          setStatus('Music paused.');
+        } else if (event.data === YT.PlayerState.ENDED) {
+          if (looping) {
+            event.target.seekTo(0, true);
+            event.target.playVideo();
+          } else {
+            setPlaying(false);
+            setStatus('Session ended.');
+          }
+        } else if (event.data === YT.PlayerState.BUFFERING) {
+          setStatus('Buffering...');
+        }
+      },
+
+      onError: function(event) {
+        setPlaying(false);
+
+        const errors = {
+          2: 'Invalid YouTube video ID.',
+          5: 'HTML5 player error.',
+          100: 'Video not found or unavailable.',
+          101: 'Video owner does not allow embedding.',
+          150: 'Video owner does not allow embedding.',
+          153: 'YouTube requires a valid website origin. Use HTTPS or localhost.'
+        };
+
+        setStatus(errors[event.data] ||
+          'YouTube playback error: ' + event.data);
+      }
+    }
+  });
+}
+
+window.onYouTubeIframeAPIReady = function() {
+  apiReady = true;
+
+  if (pendingVideoId && currentSource === 'youtube') {
+    createYouTubePlayer(pendingVideoId);
+  }
+};
+
+const youtubeScript = document.createElement('script');
+youtubeScript.src = 'https://www.youtube.com/iframe_api';
+youtubeScript.async = true;
+
+youtubeScript.onerror = function() {
+  setStatus('Could not connect to YouTube. Check your internet.');
+};
+
+document.head.appendChild(youtubeScript);
+
+// Play / Pause
+playButton.addEventListener('click', async function() {
+  if (currentSource === 'youtube') {
+    if (!youtubePlayer || !youtubeReady) {
+      setStatus('Please wait for YouTube to load.');
+      return;
+    }
+
+    if (youtubePlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+      youtubePlayer.pauseVideo();
+    } else {
+      youtubePlayer.playVideo();
+    }
+
+    return;
+  }
+
+  if (!audio.src) {
+    setStatus('Choose an audio file or paste an audio URL first.');
+    return;
+  }
+
+  if (audio.paused) {
+    try {
+      await audio.play();
+    } catch (error) {
+      setStatus('Playback failed: ' + error.message);
+    }
+  } else {
+    audio.pause();
+  }
+});
+
+// Audio events
+audio.addEventListener('play', function() {
+  setPlaying(true);
+  setStatus('Now playing · Your music');
+});
+
+audio.addEventListener('pause', function() {
+  setPlaying(false);
+});
+
+audio.addEventListener('loadedmetadata', function() {
+  duration.textContent = formatTime(audio.duration);
+});
+
+audio.addEventListener('timeupdate', function() {
+  if (currentSource !== 'audio' || !audio.duration) return;
+
+  progress.value = audio.currentTime / audio.duration * 100;
+  current.textContent = formatTime(audio.currentTime);
+});
+
+audio.addEventListener('error', function() {
+  if (audio.src) {
+    setStatus('Audio loading failed. Check file format or URL.');
+  }
+});
+
+// Progress bar
+progress.addEventListener('input', function() {
+  if (currentSource === 'audio' && audio.duration) {
+    audio.currentTime = progress.value / 100 * audio.duration;
+  } else if (currentSource === 'youtube' &&
+      youtubePlayer && youtubeReady) {
+    const total = youtubePlayer.getDuration();
+
+    if (total) {
+      youtubePlayer.seekTo(progress.value / 100 * total, true);
+    }
+  }
+});
+
+setInterval(function() {
+  if (currentSource !== 'youtube' ||
+      !youtubePlayer || !youtubeReady) return;
+
+  const total = youtubePlayer.getDuration();
+  const time = youtubePlayer.getCurrentTime();
+
+  if (total > 0) {
+    progress.value = time / total * 100;
+    current.textContent = formatTime(time);
+    duration.textContent = formatTime(total);
+  }
+}, 500);
+
+// Loop
+document.getElementById('loop').addEventListener('click', function() {
+  looping = !looping;
+  audio.loop = looping;
+
+  this.classList.toggle('active', looping);
+
+  if (youtubePlayer && youtubeReady) {
+    youtubePlayer.setLoop(looping);
+  }
+
+  setStatus(looping ? 'Loop enabled.' : 'Loop disabled.');
+});
+
+// Mute
+document.getElementById('mute').addEventListener('click', function() {
+  muted = !muted;
+  audio.muted = muted;
+
+  if (youtubePlayer && youtubeReady) {
+    muted ? youtubePlayer.mute() : youtubePlayer.unMute();
+  }
+
+  this.classList.toggle('active', muted);
+});
+
+// Local audio
+document.getElementById('file').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  destroyYouTube();
+  stopAudio();
+
+  currentSource = 'audio';
+  pendingVideoId = null;
+  album.style.display = 'grid';
+
+  audioObjectURL = URL.createObjectURL(file);
+  audio.src = audioObjectURL;
+  audio.loop = looping;
+  audio.muted = muted;
+
+  document.getElementById('track').textContent = file.name;
+  document.getElementById('artist').textContent = 'YOUR MUSIC';
+
+  resetProgress();
+  setStatus('Loading your music...');
+
+  audio.play().catch(function(error) {
+    setStatus('Audio ready. Press play to start.');
+    console.error(error);
+  });
+});
+
+// Online URLs
+document.getElementById('urlForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const url = document.getElementById('url').value.trim();
+  if (!url) return;
+
+  const youtubeId = getYouTubeId(url);
+
+  if (youtubeId) {
+    loadYouTube(youtubeId);
+    return;
+  }
+
+  if (/spotify\.com/i.test(url)) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+    setStatus('Spotify opened in a new tab.');
+    return;
+  }
+
+  // Check file extension in URL pathname, ignoring query parameters.
+  try {
+    const parsed = new URL(url);
+    const pathname = parsed.pathname;
+
+    if (/\.(mp3|wav|ogg|m4a|aac)$/i.test(pathname)) {
+      destroyYouTube();
+      stopAudio();
+
+      currentSource = 'audio';
+      pendingVideoId = null;
+      album.style.display = 'grid';
+
+      audio.src = url;
+      audio.loop = looping;
+      audio.muted = muted;
+
+      document.getElementById('track').textContent = 'Your Music';
+      document.getElementById('artist').textContent = 'TAPRI FM';
+
+      resetProgress();
+      setStatus('Loading audio...');
+
+      audio.play().catch(function(error) {
+        setStatus('Audio ready. Press play. ' + error.message);
+      });
+
+      return;
+    }
+  } catch (error) {
+    setStatus('Invalid URL.');
+    return;
+  }
+
+  setStatus('Unsupported link. Use YouTube or a direct audio file URL.');
+});
+
+// Demo listener count
+setInterval(function() {
+  const count = document.getElementById('listeners');
+  let value = parseInt(count.textContent, 10);
+
+  value += Math.floor(Math.random() * 3) - 1;
+
+  count.textContent = value + ' people chilling here right now';
+}, 12000);
+</script>
+
+</body>
+</html>

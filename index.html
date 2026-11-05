@@ -17,9 +17,7 @@
   --accent: #d8a66a;
   --dark: #100e0b;
 }
-
 * { box-sizing: border-box; }
-
 body {
   margin: 0;
   min-height: 100vh;
@@ -28,7 +26,6 @@ body {
   font-family: 'DM Mono', monospace;
   overflow-x: hidden;
 }
-
 .background {
   position: fixed;
   inset: 0;
@@ -39,14 +36,12 @@ body {
     center/cover;
   filter: brightness(.65) saturate(.7);
 }
-
 .background::after {
   content: "";
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse at center, transparent 5%, #100e0b 100%);
 }
-
 .top {
   position: absolute;
   top: 30px;
@@ -59,13 +54,7 @@ body {
   font-size: 10px;
   letter-spacing: 2px;
 }
-
-.live {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
+.live { display: flex; align-items: center; gap: 9px; }
 .dot {
   width: 6px;
   height: 6px;
@@ -73,7 +62,6 @@ body {
   border-radius: 50%;
   box-shadow: 0 0 10px #b6c79b;
 }
-
 main {
   min-height: 100vh;
   display: flex;
@@ -83,7 +71,6 @@ main {
   padding: 100px 20px 40px;
   text-align: center;
 }
-
 h1 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(42px, 8vw, 76px);
@@ -92,7 +79,6 @@ h1 {
   margin: 0 0 10px;
   text-shadow: 0 4px 30px #000;
 }
-
 .subtitle {
   color: var(--muted);
   font-size: 11px;
@@ -100,7 +86,6 @@ h1 {
   text-transform: uppercase;
   margin-bottom: 35px;
 }
-
 .player {
   width: min(390px, 94vw);
   padding: 25px;
@@ -110,7 +95,6 @@ h1 {
   backdrop-filter: blur(18px);
   box-shadow: 0 20px 80px #0008;
 }
-
 .player-top {
   display: flex;
   justify-content: space-between;
@@ -119,7 +103,6 @@ h1 {
   letter-spacing: 2px;
   margin-bottom: 25px;
 }
-
 .album {
   width: 110px;
   height: 110px;
@@ -131,7 +114,6 @@ h1 {
   background: radial-gradient(circle, #d8a66a 0 4%, #5c3c25 5% 20%, #1d1915 21% 100%);
   box-shadow: 0 0 40px #d8a66a18;
 }
-
 .album::after {
   content: "";
   width: 13px;
@@ -139,15 +121,8 @@ h1 {
   background: var(--cream);
   border-radius: 50%;
 }
-
-.album.playing {
-  animation: spin 8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
+.album.playing { animation: spin 8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .youtube-container {
   display: none;
   width: 100%;
@@ -157,26 +132,21 @@ h1 {
   background: #000;
   margin: 0 auto 18px;
 }
-
-#youtubePlayer,
-#youtubePlayer iframe {
+#youtubePlayer, #youtubePlayer iframe {
   width: 100%;
   height: 100%;
 }
-
 .track {
   margin: 25px 0 8px;
   font-family: 'Playfair Display', serif;
   font-size: 19px;
   overflow-wrap: anywhere;
 }
-
 .artist {
   font-size: 10px;
   color: var(--muted);
   letter-spacing: 1px;
 }
-
 .status {
   font-size: 9px;
   color: var(--muted);
@@ -184,21 +154,18 @@ h1 {
   min-height: 25px;
   overflow-wrap: anywhere;
 }
-
 .progress {
   margin: 24px 0 8px;
   width: 100%;
   accent-color: var(--accent);
   cursor: pointer;
 }
-
 .times {
   display: flex;
   justify-content: space-between;
   font-size: 9px;
   color: var(--muted);
 }
-
 .controls {
   display: flex;
   justify-content: center;
@@ -206,7 +173,6 @@ h1 {
   gap: 17px;
   margin: 22px 0;
 }
-
 button {
   border: 0;
   background: none;
@@ -214,7 +180,6 @@ button {
   cursor: pointer;
   font: inherit;
 }
-
 .play {
   width: 52px;
   height: 52px;
@@ -224,22 +189,16 @@ button {
   font-size: 18px;
   flex-shrink: 0;
 }
-
 .play:hover {
   background: var(--accent);
   color: var(--dark);
 }
-
 .small {
   color: var(--muted);
   font-size: 15px;
   padding: 7px;
 }
-
-.small.active {
-  color: var(--accent);
-}
-
+.small.active { color: var(--accent); }
 .upload {
   display: block;
   margin: 14px auto 0;
@@ -247,17 +206,12 @@ button {
   font-size: 10px;
   cursor: pointer;
 }
-
-.upload:hover {
-  color: var(--cream);
-}
-
+.upload:hover { color: var(--cream); }
 .url-form {
   display: flex;
   gap: 6px;
   margin-top: 15px;
 }
-
 .url-form input {
   width: 100%;
   min-width: 0;
@@ -268,14 +222,12 @@ button {
   outline: none;
   font: 10px 'DM Mono', monospace;
 }
-
 .url-form button {
   border: 1px solid #ffffff30;
   padding: 0 14px;
   font-size: 10px;
   color: var(--accent);
 }
-
 .playlist-heading {
   display: flex;
   justify-content: space-between;
@@ -287,19 +239,16 @@ button {
   letter-spacing: 2px;
   color: var(--muted);
 }
-
 .playlist-heading button {
   color: var(--accent);
   font-size: 10px;
 }
-
 .playlist {
   margin-top: 8px;
   max-height: 190px;
   overflow-y: auto;
   text-align: left;
 }
-
 .playlist-item {
   display: flex;
   align-items: center;
@@ -308,56 +257,36 @@ button {
   border-bottom: 1px solid #ffffff0c;
   cursor: pointer;
 }
-
-.playlist-item:hover {
-  background: #ffffff09;
-}
-
-.playlist-item.active {
-  background: #d8a66a13;
-}
-
+.playlist-item:hover { background: #ffffff09; }
+.playlist-item.active { background: #d8a66a13; }
 .song-number {
   color: var(--muted);
   font-size: 10px;
   min-width: 18px;
 }
-
-.song-details {
-  min-width: 0;
-  flex: 1;
-}
-
+.song-details { min-width: 0; flex: 1; }
 .song-title {
   font-family: 'Playfair Display', serif;
   font-size: 13px;
   overflow-wrap: anywhere;
 }
-
 .song-type {
   color: var(--muted);
   font-size: 8px;
   margin-top: 4px;
 }
-
-.song-playing {
-  color: var(--accent);
-  font-size: 12px;
-}
-
+.song-playing { color: var(--accent); font-size: 12px; }
 .remove-song {
   color: var(--muted);
   font-size: 17px;
   padding: 5px;
 }
-
 .empty-playlist {
   color: var(--muted);
   font-size: 10px;
   padding: 18px 5px;
   text-align: center;
 }
-
 .footer {
   padding: 20px 0 25px;
   width: 100%;
@@ -366,7 +295,6 @@ button {
   font-size: 9px;
   letter-spacing: 2px;
 }
-
 @media(max-width: 600px) {
   .top {
     top: 20px;
@@ -375,17 +303,10 @@ button {
     font-size: 8px;
     letter-spacing: 1px;
   }
-
   main { padding-top: 85px; }
-
-  .subtitle {
-    font-size: 9px;
-    margin-bottom: 25px;
-  }
-
+  .subtitle { font-size: 9px; margin-bottom: 25px; }
   .player { padding: 20px; }
 }
-
 @media(max-height: 700px) {
   main { padding-top: 70px; padding-bottom: 30px; }
   .subtitle { margin-bottom: 18px; }
@@ -399,7 +320,6 @@ button {
 </head>
 
 <body>
-
 <div class="background"></div>
 
 <div class="top">
@@ -415,7 +335,6 @@ button {
   <div class="subtitle">A little escape from everything</div>
 
   <section class="player">
-
     <div class="player-top">
       <span>NOW PLAYING</span>
       <span>TAPRI FM</span>
@@ -468,7 +387,6 @@ button {
     <div class="playlist" id="playlist">
       <div class="empty-playlist">Your playlist is waiting for music ☕</div>
     </div>
-
   </section>
 </main>
 
@@ -478,6 +396,10 @@ button {
 
 <script>
 'use strict';
+
+// --------------------------------------------------
+// ELEMENTS AND PLAYER STATE
+// --------------------------------------------------
 
 const audio = document.getElementById('audio');
 const playButton = document.getElementById('play');
@@ -501,10 +423,110 @@ let apiReady = false;
 let currentSource = 'audio';
 let muted = false;
 let looping = true;
-let audioObjectURL = null;
 
 let savedPosition = 0;
-let restoring = false;
+
+// --------------------------------------------------
+// INDEXEDDB: PERMANENT LOCAL AUDIO STORAGE
+// --------------------------------------------------
+
+const DB_NAME = 'ChaiKiTapriDatabase';
+const DB_VERSION = 1;
+const DB_STORE = 'localTracks';
+
+let databasePromise = null;
+
+function openDatabase() {
+  if (databasePromise) return databasePromise;
+
+  databasePromise = new Promise((resolve, reject) => {
+    if (!window.indexedDB) {
+      reject(new Error('IndexedDB is not supported by this browser.'));
+      return;
+    }
+
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onupgradeneeded = function(event) {
+      const db = event.target.result;
+
+      if (!db.objectStoreNames.contains(DB_STORE)) {
+        db.createObjectStore(DB_STORE, { keyPath: 'id' });
+      }
+    };
+
+    request.onsuccess = function() {
+      resolve(request.result);
+    };
+
+    request.onerror = function() {
+      reject(request.error || new Error('Could not open audio storage.'));
+    };
+  });
+
+  return databasePromise;
+}
+
+async function storeLocalFile(id, file) {
+  const db = await openDatabase();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(DB_STORE, 'readwrite');
+
+    transaction.objectStore(DB_STORE).put({
+      id: id,
+      blob: file,
+      title: file.name,
+      mimeType: file.type || 'audio/mpeg'
+    });
+
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+    transaction.onabort = () => reject(transaction.error);
+  });
+}
+
+async function getLocalFile(id) {
+  const db = await openDatabase();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(DB_STORE, 'readonly');
+    const request = transaction.objectStore(DB_STORE).get(id);
+
+    request.onsuccess = () => resolve(request.result || null);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function deleteLocalFile(id) {
+  const db = await openDatabase();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(DB_STORE, 'readwrite');
+
+    transaction.objectStore(DB_STORE).delete(id);
+
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+async function clearLocalFiles() {
+  const db = await openDatabase();
+
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(DB_STORE, 'readwrite');
+
+    transaction.objectStore(DB_STORE).clear();
+
+    transaction.oncomplete = () => resolve();
+    transaction.onerror = () => reject(transaction.error);
+  });
+}
+
+// --------------------------------------------------
+// GENERAL HELPERS
+// --------------------------------------------------
 
 function setStatus(message) {
   statusText.textContent = message;
@@ -519,6 +541,7 @@ function formatTime(seconds) {
 
 function setPlaying(playing) {
   playButton.textContent = playing ? 'Ⅱ' : '▶';
+
   album.classList.toggle(
     'playing',
     playing && currentSource === 'audio'
@@ -539,6 +562,30 @@ function generateId() {
   return Date.now().toString(36) +
     Math.random().toString(36).slice(2, 8);
 }
+
+function getCurrentPosition() {
+  if (currentSource === 'youtube') {
+    if (youtubePlayer && youtubeReady) {
+      return youtubePlayer.getCurrentTime() || 0;
+    }
+
+    return savedPosition;
+  }
+
+  if (currentSource === 'audio') {
+    if (audio.readyState >= 1) {
+      return audio.currentTime || 0;
+    }
+
+    return savedPosition;
+  }
+
+  return 0;
+}
+
+// --------------------------------------------------
+// YOUTUBE URL DETECTION
+// --------------------------------------------------
 
 function getYouTubeId(url) {
   try {
@@ -561,6 +608,7 @@ function getYouTubeId(url) {
         const match = parsed.pathname.match(
           /^\/(?:embed|shorts|live)\/([^/]+)/
         );
+
         if (match) id = match[1];
       }
     }
@@ -571,67 +619,106 @@ function getYouTubeId(url) {
   }
 }
 
-function getCurrentPosition() {
-  if (currentSource === 'youtube' &&
-      youtubePlayer && youtubeReady) {
-    return youtubePlayer.getCurrentTime() || 0;
-  }
-
-  if (currentSource === 'audio') {
-    return audio.currentTime || 0;
-  }
-
-  return 0;
-}
+// --------------------------------------------------
+// SAVE AND RESTORE PLAYLIST
+// --------------------------------------------------
 
 function savePlaylist() {
   try {
-    const savedSongs = playlist
-      .filter(song => !song.local)
-      .map(song => ({
+    const savedSongs = playlist.map(song => {
+      if (song.local) {
+        return {
+          id: song.id,
+          type: 'audio',
+          title: song.title,
+          artist: song.artist,
+          local: true,
+          blobKey: song.id
+        };
+      }
+
+      return {
         id: song.id,
         type: song.type,
         url: song.url,
         videoId: song.videoId || null,
         title: song.title,
-        artist: song.artist
-      }));
+        artist: song.artist,
+        local: false
+      };
+    });
 
     const activeSong = getCurrentSong();
 
     const data = {
       playlist: savedSongs,
-      currentId: activeSong && !activeSong.local
-        ? activeSong.id
-        : null,
-      position: activeSong && !activeSong.local
-        ? getCurrentPosition()
-        : 0,
-      looping,
-      muted
+      currentId: activeSong ? activeSong.id : null,
+      position: activeSong ? getCurrentPosition() : 0,
+      looping: looping,
+      muted: muted
     };
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   } catch (error) {
     console.error('Storage error:', error);
+    setStatus('Could not save playlist. Browser storage may be full.');
   }
 }
 
-function loadSavedPlaylist() {
+async function loadSavedPlaylist() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return;
 
     const data = JSON.parse(saved);
 
-    if (Array.isArray(data.playlist)) {
-      playlist = data.playlist.filter(song =>
-        song &&
-        typeof song.id === 'string' &&
+    if (!Array.isArray(data.playlist)) return;
+
+    const restoredSongs = [];
+
+    for (const song of data.playlist) {
+      if (!song || typeof song.id !== 'string') continue;
+
+      if (song.local === true) {
+        try {
+          const storedFile = await getLocalFile(song.blobKey || song.id);
+
+          if (!storedFile || !storedFile.blob) {
+            console.warn('Local audio file is missing:', song.title);
+            continue;
+          }
+
+          const objectURL = URL.createObjectURL(storedFile.blob);
+
+          restoredSongs.push({
+            id: song.id,
+            type: 'audio',
+            url: objectURL,
+            title: song.title || storedFile.title || 'Local Audio',
+            artist: song.artist || 'YOUR MUSIC',
+            local: true,
+            objectURL: objectURL
+          });
+        } catch (error) {
+          console.error('Could not restore local file:', error);
+        }
+      } else if (
         typeof song.url === 'string' &&
         (song.type === 'youtube' || song.type === 'audio')
-      );
+      ) {
+        restoredSongs.push({
+          id: song.id,
+          type: song.type,
+          url: song.url,
+          videoId: song.videoId || null,
+          title: song.title || 'Unknown song',
+          artist: song.artist || 'TAPRI FM',
+          local: false
+        });
+      }
     }
+
+    playlist = restoredSongs;
 
     looping = data.looping !== false;
     muted = data.muted === true;
@@ -651,10 +738,21 @@ function loadSavedPlaylist() {
         song => song.id === data.currentId
       );
     }
+
+    // Remove references to local files that no longer exist.
+    if (restoredSongs.length !== data.playlist.length) {
+      savePlaylist();
+    }
+
   } catch (error) {
     console.error('Restore error:', error);
+    setStatus('Could not restore the saved playlist.');
   }
 }
+
+// --------------------------------------------------
+// PLAYLIST DISPLAY
+// --------------------------------------------------
 
 function renderPlaylist() {
   playlistElement.innerHTML = '';
@@ -687,7 +785,7 @@ function renderPlaylist() {
     const type = document.createElement('div');
     type.className = 'song-type';
     type.textContent = song.local
-      ? 'LOCAL AUDIO'
+      ? 'LOCAL AUDIO · SAVED ON DEVICE'
       : song.type === 'youtube' ? 'YOUTUBE' : 'AUDIO URL';
 
     details.appendChild(title);
@@ -715,6 +813,10 @@ function renderPlaylist() {
     playlistElement.appendChild(item);
   });
 }
+
+// --------------------------------------------------
+// AUDIO AND YOUTUBE PLAYER MANAGEMENT
+// --------------------------------------------------
 
 function stopAudio() {
   audio.pause();
@@ -755,7 +857,8 @@ function playSong(index, autoplay = true, resumeAt = 0) {
   renderPlaylist();
 
   document.getElementById('track').textContent = song.title;
-  document.getElementById('artist').textContent = song.artist || 'TAPRI FM';
+  document.getElementById('artist').textContent =
+    song.artist || 'TAPRI FM';
 
   if (song.type === 'youtube') {
     album.style.display = 'none';
@@ -766,6 +869,7 @@ function playSong(index, autoplay = true, resumeAt = 0) {
     if (apiReady) {
       createYouTubePlayer(song.videoId, autoplay, resumeAt);
     }
+
   } else {
     currentSource = 'audio';
     album.style.display = 'grid';
@@ -785,6 +889,8 @@ function playSong(index, autoplay = true, resumeAt = 0) {
         audio.currentTime = resumeAt;
       }
 
+      savedPosition = 0;
+
       if (autoplay) {
         audio.play().catch(error => {
           setStatus('Song ready. Press play to listen.');
@@ -793,8 +899,6 @@ function playSong(index, autoplay = true, resumeAt = 0) {
       } else {
         setStatus('Last song restored. Press play to resume.');
       }
-
-      savedPosition = 0;
     };
 
     audio.addEventListener('loadedmetadata', onMetadata);
@@ -803,6 +907,10 @@ function playSong(index, autoplay = true, resumeAt = 0) {
 
   savePlaylist();
 }
+
+// --------------------------------------------------
+// YOUTUBE IFRAME API
+// --------------------------------------------------
 
 function createYouTubePlayer(videoId, autoplay, resumeAt = 0) {
   const song = getCurrentSong();
@@ -815,7 +923,7 @@ function createYouTubePlayer(videoId, autoplay, resumeAt = 0) {
   youtubePlayer = new YT.Player('youtubePlayer', {
     width: '100%',
     height: '100%',
-    videoId,
+    videoId: videoId,
 
     playerVars: {
       autoplay: autoplay ? 1 : 0,
@@ -838,13 +946,13 @@ function createYouTubePlayer(videoId, autoplay, resumeAt = 0) {
           event.target.seekTo(resumeAt, true);
         }
 
+        savedPosition = 0;
+
         if (autoplay) {
           event.target.playVideo();
         } else {
           setStatus('Last song restored. Press play to resume.');
         }
-
-        savedPosition = 0;
       },
 
       onStateChange: function(event) {
@@ -853,10 +961,12 @@ function createYouTubePlayer(videoId, autoplay, resumeAt = 0) {
         if (event.data === YT.PlayerState.PLAYING) {
           setPlaying(true);
           setStatus('Now playing · Tapri FM');
+
         } else if (event.data === YT.PlayerState.PAUSED) {
           setPlaying(false);
           savePlaylist();
           setStatus('Music paused.');
+
         } else if (event.data === YT.PlayerState.ENDED) {
           setPlaying(false);
 
@@ -866,6 +976,7 @@ function createYouTubePlayer(videoId, autoplay, resumeAt = 0) {
           } else {
             playNext();
           }
+
         } else if (event.data === YT.PlayerState.BUFFERING) {
           setStatus('Buffering...');
         }
@@ -885,7 +996,8 @@ function createYouTubePlayer(videoId, autoplay, resumeAt = 0) {
           153: 'YouTube requires a valid website origin.'
         };
 
-        setStatus(errors[event.data] || 'YouTube playback error: ' + event.data);
+        setStatus(errors[event.data] ||
+          'YouTube playback error: ' + event.data);
       }
     }
   });
@@ -896,7 +1008,8 @@ window.onYouTubeIframeAPIReady = function() {
 
   const song = getCurrentSong();
 
-  if (song && song.type === 'youtube' && currentSource === 'youtube') {
+  if (song && song.type === 'youtube' &&
+      currentSource === 'youtube') {
     createYouTubePlayer(song.videoId, false, savedPosition);
   }
 };
@@ -906,6 +1019,10 @@ youtubeScript.src = 'https://www.youtube.com/iframe_api';
 youtubeScript.async = true;
 youtubeScript.onerror = () => setStatus('Could not connect to YouTube.');
 document.head.appendChild(youtubeScript);
+
+// --------------------------------------------------
+// ADD SONGS
+// --------------------------------------------------
 
 function addSong(song) {
   playlist.push(song);
@@ -919,13 +1036,19 @@ function addSong(song) {
   }
 }
 
+// --------------------------------------------------
+// NEXT AND PREVIOUS
+// --------------------------------------------------
+
 function playNext() {
   if (!playlist.length) return;
 
   if (currentIndex < playlist.length - 1) {
     playSong(currentIndex + 1, true);
+
   } else if (looping) {
     playSong(0, true);
+
   } else {
     setPlaying(false);
     setStatus('Playlist finished. Enjoy your chai ☕');
@@ -946,12 +1069,17 @@ function playPrevious() {
 
   if (currentIndex > 0) {
     playSong(currentIndex - 1, true);
+
   } else if (looping) {
     playSong(playlist.length - 1, true);
   }
 }
 
-function removeSong(index) {
+// --------------------------------------------------
+// REMOVE SONG
+// --------------------------------------------------
+
+async function removeSong(index) {
   if (index < 0 || index >= playlist.length) return;
 
   const wasCurrent = index === currentIndex;
@@ -963,6 +1091,14 @@ function removeSong(index) {
     setPlaying(false);
   }
 
+  if (removed.local) {
+    try {
+      await deleteLocalFile(removed.id);
+    } catch (error) {
+      console.error('Could not delete stored audio:', error);
+    }
+  }
+
   if (removed.objectURL) {
     URL.revokeObjectURL(removed.objectURL);
   }
@@ -972,6 +1108,7 @@ function removeSong(index) {
   if (!playlist.length) {
     currentIndex = -1;
     currentSource = 'audio';
+    savedPosition = 0;
     album.style.display = 'grid';
 
     document.getElementById('track').textContent = 'Midnight Chai';
@@ -979,9 +1116,11 @@ function removeSong(index) {
 
     resetProgress();
     setStatus('Your playlist is empty.');
+
   } else if (wasCurrent) {
     currentIndex = -1;
     playSong(Math.min(index, playlist.length - 1), false);
+
   } else {
     if (index < currentIndex) currentIndex--;
   }
@@ -990,11 +1129,17 @@ function removeSong(index) {
   savePlaylist();
 }
 
-// Play and pause
+// --------------------------------------------------
+// PLAY / PAUSE
+// --------------------------------------------------
+
 playButton.addEventListener('click', function() {
   if (!getCurrentSong()) {
-    if (playlist.length) playSong(0, true);
-    else setStatus('Add a song to your playlist first.');
+    if (playlist.length) {
+      playSong(0, true);
+    } else {
+      setStatus('Add a song to your playlist first.');
+    }
     return;
   }
 
@@ -1021,7 +1166,10 @@ playButton.addEventListener('click', function() {
   }
 });
 
-// Audio events
+// --------------------------------------------------
+// AUDIO EVENTS
+// --------------------------------------------------
+
 audio.addEventListener('play', function() {
   setPlaying(true);
   setStatus('Now playing · Your music');
@@ -1050,24 +1198,35 @@ audio.addEventListener('ended', function() {
 });
 
 audio.addEventListener('error', function() {
-  if (audio.src) setStatus('Audio loading failed. Check the file or URL.');
+  if (audio.src) {
+    setStatus('Audio loading failed. Check the file or URL.');
+  }
 });
 
-// Progress
+// --------------------------------------------------
+// PROGRESS BAR
+// --------------------------------------------------
+
 progress.addEventListener('input', function() {
   if (currentSource === 'audio' && audio.duration) {
     audio.currentTime = progress.value / 100 * audio.duration;
+
   } else if (currentSource === 'youtube' && youtubeReady) {
     const total = youtubePlayer.getDuration();
+
     if (total) {
       youtubePlayer.seekTo(progress.value / 100 * total, true);
     }
   }
 });
 
-// YouTube progress
+// --------------------------------------------------
+// YOUTUBE PROGRESS
+// --------------------------------------------------
+
 setInterval(function() {
-  if (currentSource !== 'youtube' || !youtubePlayer || !youtubeReady) return;
+  if (currentSource !== 'youtube' ||
+      !youtubePlayer || !youtubeReady) return;
 
   const total = youtubePlayer.getDuration();
   const time = youtubePlayer.getCurrentTime();
@@ -1079,7 +1238,10 @@ setInterval(function() {
   }
 }, 500);
 
-// Loop
+// --------------------------------------------------
+// LOOP
+// --------------------------------------------------
+
 document.getElementById('loop').addEventListener('click', function() {
   looping = !looping;
   audio.loop = looping;
@@ -1089,7 +1251,10 @@ document.getElementById('loop').addEventListener('click', function() {
   savePlaylist();
 });
 
-// Mute
+// --------------------------------------------------
+// MUTE
+// --------------------------------------------------
+
 document.getElementById('mute').addEventListener('click', function() {
   muted = !muted;
   audio.muted = muted;
@@ -1103,31 +1268,65 @@ document.getElementById('mute').addEventListener('click', function() {
   savePlaylist();
 });
 
-// Previous and next
-document.getElementById('previous').addEventListener('click', playPrevious);
-document.getElementById('next').addEventListener('click', playNext);
+// --------------------------------------------------
+// PREVIOUS / NEXT BUTTONS
+// --------------------------------------------------
 
-// Local audio upload
-document.getElementById('file').addEventListener('change', function(event) {
+document.getElementById('previous')
+  .addEventListener('click', playPrevious);
+
+document.getElementById('next')
+  .addEventListener('click', playNext);
+
+// --------------------------------------------------
+// LOCAL AUDIO UPLOAD - NOW SAVED IN INDEXEDDB
+// --------------------------------------------------
+
+document.getElementById('file').addEventListener('change', async function(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  const objectURL = URL.createObjectURL(file);
+  if (!file.type.startsWith('audio/')) {
+    setStatus('Please select a valid audio file.');
+    event.target.value = '';
+    return;
+  }
 
-  addSong({
-    id: generateId(),
-    type: 'audio',
-    url: objectURL,
-    title: file.name,
-    artist: 'YOUR MUSIC',
-    local: true,
-    objectURL
-  });
+  const id = generateId();
 
-  event.target.value = '';
+  setStatus('Saving your audio on this device...');
+
+  try {
+    // Save the actual file, not a temporary URL.
+    await storeLocalFile(id, file);
+
+    const objectURL = URL.createObjectURL(file);
+
+    addSong({
+      id: id,
+      type: 'audio',
+      url: objectURL,
+      title: file.name,
+      artist: 'YOUR MUSIC',
+      local: true,
+      objectURL: objectURL
+    });
+
+    setStatus('Saved permanently in this browser: ' + file.name);
+
+  } catch (error) {
+    console.error('Local audio storage error:', error);
+    setStatus('Could not save audio. Check available browser storage.');
+
+  } finally {
+    event.target.value = '';
+  }
 });
 
-// Add online URL
+// --------------------------------------------------
+// ADD ONLINE URL
+// --------------------------------------------------
+
 document.getElementById('urlForm').addEventListener('submit', function(event) {
   event.preventDefault();
 
@@ -1142,7 +1341,7 @@ document.getElementById('urlForm').addEventListener('submit', function(event) {
     addSong({
       id: generateId(),
       type: 'youtube',
-      url,
+      url: url,
       videoId: youtubeId,
       title: 'YouTube - ' + youtubeId,
       artist: 'YOUTUBE · TAPRI FM',
@@ -1167,7 +1366,7 @@ document.getElementById('urlForm').addEventListener('submit', function(event) {
       addSong({
         id: generateId(),
         type: 'audio',
-        url,
+        url: url,
         title: decodeURIComponent(filename || 'Online Audio'),
         artist: 'ONLINE AUDIO · TAPRI FM',
         local: false
@@ -1178,13 +1377,17 @@ document.getElementById('urlForm').addEventListener('submit', function(event) {
     }
 
     setStatus('Unsupported link. Use YouTube or a direct audio URL.');
+
   } catch (error) {
     setStatus('Invalid URL.');
   }
 });
 
-// Clear playlist
-document.getElementById('clearPlaylist').addEventListener('click', function() {
+// --------------------------------------------------
+// CLEAR PLAYLIST AND STORED LOCAL FILES
+// --------------------------------------------------
+
+document.getElementById('clearPlaylist').addEventListener('click', async function() {
   stopAudio();
   destroyYouTube();
 
@@ -1207,26 +1410,65 @@ document.getElementById('clearPlaylist').addEventListener('click', function() {
   renderPlaylist();
   savePlaylist();
 
-  setStatus('Playlist cleared. Start fresh!');
+  try {
+    await clearLocalFiles();
+    setStatus('Playlist and saved local audio cleared.');
+
+  } catch (error) {
+    console.error('Could not clear stored files:', error);
+    setStatus('Playlist cleared, but some stored files could not be deleted.');
+  }
 });
 
-// Save playback position every 3 seconds
+// --------------------------------------------------
+// SAVE PLAYBACK POSITION EVERY 3 SECONDS
+// --------------------------------------------------
+
 setInterval(function() {
-  if (getCurrentSong()) savePlaylist();
+  if (getCurrentSong()) {
+    savePlaylist();
+  }
 }, 3000);
 
-// Restore saved playlist
-loadSavedPlaylist();
-renderPlaylist();
+// --------------------------------------------------
+// RESTORE PLAYLIST AFTER PAGE LOAD
+// --------------------------------------------------
 
-if (currentIndex >= 0 && currentIndex < playlist.length) {
-  playSong(currentIndex, false, savedPosition);
-} else if (playlist.length) {
-  currentIndex = -1;
-  setStatus('Playlist restored. Choose a song.');
+async function initializePlayer() {
+  setStatus('Checking your saved music...');
+
+  try {
+    await loadSavedPlaylist();
+
+    renderPlaylist();
+
+    if (currentIndex >= 0 && currentIndex < playlist.length) {
+      const indexToRestore = currentIndex;
+      const positionToRestore = savedPosition;
+
+      playSong(indexToRestore, false, positionToRestore);
+
+    } else if (playlist.length) {
+      currentIndex = -1;
+      setStatus('Playlist restored. Choose a song.');
+
+    } else {
+      currentIndex = -1;
+      setStatus('Ready for a chai break.');
+    }
+
+  } catch (error) {
+    console.error('Player initialization failed:', error);
+    setStatus('Could not restore your saved music.');
+  }
 }
 
-// Demo listener count
+initializePlayer();
+
+// --------------------------------------------------
+// DEMO LISTENER COUNT
+// --------------------------------------------------
+
 setInterval(function() {
   const count = document.getElementById('listeners');
   let value = parseInt(count.textContent, 10);

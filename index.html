@@ -80,7 +80,7 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 100px 20px 75px;
+  padding: 100px 20px 40px;
   text-align: center;
 }
 
@@ -102,11 +102,11 @@ h1 {
 }
 
 .player {
-  width: min(360px, 92vw);
+  width: min(390px, 94vw);
   padding: 25px;
   border: 1px solid #ffffff20;
   border-radius: 4px;
-  background: rgba(20,17,13,.82);
+  background: rgba(20,17,13,.86);
   backdrop-filter: blur(18px);
   box-shadow: 0 20px 80px #0008;
 }
@@ -158,13 +158,8 @@ h1 {
   margin: 0 auto 18px;
 }
 
-.youtube-container iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-#youtubePlayer {
+#youtubePlayer,
+#youtubePlayer iframe {
   width: 100%;
   height: 100%;
 }
@@ -208,7 +203,7 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 17px;
   margin: 22px 0;
 }
 
@@ -227,6 +222,7 @@ button {
   border-radius: 50%;
   color: var(--accent);
   font-size: 18px;
+  flex-shrink: 0;
 }
 
 .play:hover {
@@ -236,7 +232,8 @@ button {
 
 .small {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 15px;
+  padding: 7px;
 }
 
 .small.active {
@@ -279,9 +276,90 @@ button {
   color: var(--accent);
 }
 
+.playlist-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 27px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ffffff20;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+}
+
+.playlist-heading button {
+  color: var(--accent);
+  font-size: 10px;
+}
+
+.playlist {
+  margin-top: 8px;
+  max-height: 190px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 7px;
+  border-bottom: 1px solid #ffffff0c;
+  cursor: pointer;
+}
+
+.playlist-item:hover {
+  background: #ffffff09;
+}
+
+.playlist-item.active {
+  background: #d8a66a13;
+}
+
+.song-number {
+  color: var(--muted);
+  font-size: 10px;
+  min-width: 18px;
+}
+
+.song-details {
+  min-width: 0;
+  flex: 1;
+}
+
+.song-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.song-type {
+  color: var(--muted);
+  font-size: 8px;
+  margin-top: 4px;
+}
+
+.song-playing {
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.remove-song {
+  color: var(--muted);
+  font-size: 17px;
+  padding: 5px;
+}
+
+.empty-playlist {
+  color: var(--muted);
+  font-size: 10px;
+  padding: 18px 5px;
+  text-align: center;
+}
+
 .footer {
-  position: absolute;
-  bottom: 24px;
+  padding: 20px 0 25px;
   width: 100%;
   text-align: center;
   color: #b9aa96;
@@ -309,7 +387,7 @@ button {
 }
 
 @media(max-height: 700px) {
-  main { padding-top: 70px; padding-bottom: 60px; }
+  main { padding-top: 70px; padding-bottom: 30px; }
   .subtitle { margin-bottom: 18px; }
   .player { padding: 17px; }
   .album { width: 80px; height: 80px; }
@@ -340,7 +418,7 @@ button {
 
     <div class="player-top">
       <span>NOW PLAYING</span>
-      <span>01 / TAPRI FM</span>
+      <span>TAPRI FM</span>
     </div>
 
     <div class="album" id="album"></div>
@@ -364,9 +442,11 @@ button {
     </div>
 
     <div class="controls">
-      <button class="small active" id="loop">↻</button>
-      <button class="play" id="play">▶</button>
-      <button class="small" id="mute">♪</button>
+      <button class="small active" id="loop" title="Loop">↻</button>
+      <button class="small" id="previous" title="Previous">|◀</button>
+      <button class="play" id="play" title="Play/Pause">▶</button>
+      <button class="small" id="next" title="Next">▶|</button>
+      <button class="small" id="mute" title="Mute">♪</button>
     </div>
 
     <label class="upload">
@@ -377,8 +457,17 @@ button {
     <form class="url-form" id="urlForm">
       <input id="url" type="url"
         placeholder="Paste YouTube or audio URL" required>
-      <button type="submit">LOAD</button>
+      <button type="submit">ADD</button>
     </form>
+
+    <div class="playlist-heading">
+      <span>YOUR PLAYLIST</span>
+      <button type="button" id="clearPlaylist">CLEAR ALL</button>
+    </div>
+
+    <div class="playlist" id="playlist">
+      <div class="empty-playlist">Your playlist is waiting for music ☕</div>
+    </div>
 
   </section>
 </main>
@@ -398,15 +487,24 @@ const current = document.getElementById('current');
 const duration = document.getElementById('duration');
 const statusText = document.getElementById('status');
 const youtubeContainer = document.getElementById('youtubeContainer');
+const playlistElement = document.getElementById('playlist');
+
+const STORAGE_KEY = 'chaiKiTapriPlaylist_v3';
+
+let playlist = [];
+let currentIndex = -1;
 
 let youtubePlayer = null;
 let youtubeReady = false;
 let apiReady = false;
-let pendingVideoId = null;
+
 let currentSource = 'audio';
 let muted = false;
 let looping = true;
 let audioObjectURL = null;
+
+let savedPosition = 0;
+let restoring = false;
 
 function setStatus(message) {
   statusText.textContent = message;
@@ -433,6 +531,15 @@ function resetProgress() {
   duration.textContent = '0:00';
 }
 
+function getCurrentSong() {
+  return playlist[currentIndex] || null;
+}
+
+function generateId() {
+  return Date.now().toString(36) +
+    Math.random().toString(36).slice(2, 8);
+}
+
 function getYouTubeId(url) {
   try {
     const parsed = new URL(url);
@@ -454,30 +561,165 @@ function getYouTubeId(url) {
         const match = parsed.pathname.match(
           /^\/(?:embed|shorts|live)\/([^/]+)/
         );
-
         if (match) id = match[1];
       }
     }
 
     return id && /^[a-zA-Z0-9_-]{11}$/.test(id) ? id : null;
-
   } catch (error) {
     return null;
   }
 }
 
-function releaseAudioURL() {
-  if (audioObjectURL) {
-    URL.revokeObjectURL(audioObjectURL);
-    audioObjectURL = null;
+function getCurrentPosition() {
+  if (currentSource === 'youtube' &&
+      youtubePlayer && youtubeReady) {
+    return youtubePlayer.getCurrentTime() || 0;
   }
+
+  if (currentSource === 'audio') {
+    return audio.currentTime || 0;
+  }
+
+  return 0;
+}
+
+function savePlaylist() {
+  try {
+    const savedSongs = playlist
+      .filter(song => !song.local)
+      .map(song => ({
+        id: song.id,
+        type: song.type,
+        url: song.url,
+        videoId: song.videoId || null,
+        title: song.title,
+        artist: song.artist
+      }));
+
+    const activeSong = getCurrentSong();
+
+    const data = {
+      playlist: savedSongs,
+      currentId: activeSong && !activeSong.local
+        ? activeSong.id
+        : null,
+      position: activeSong && !activeSong.local
+        ? getCurrentPosition()
+        : 0,
+      looping,
+      muted
+    };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.error('Storage error:', error);
+  }
+}
+
+function loadSavedPlaylist() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+
+    const data = JSON.parse(saved);
+
+    if (Array.isArray(data.playlist)) {
+      playlist = data.playlist.filter(song =>
+        song &&
+        typeof song.id === 'string' &&
+        typeof song.url === 'string' &&
+        (song.type === 'youtube' || song.type === 'audio')
+      );
+    }
+
+    looping = data.looping !== false;
+    muted = data.muted === true;
+
+    savedPosition = Number.isFinite(data.position)
+      ? Math.max(0, data.position)
+      : 0;
+
+    audio.loop = looping;
+    audio.muted = muted;
+
+    document.getElementById('loop').classList.toggle('active', looping);
+    document.getElementById('mute').classList.toggle('active', muted);
+
+    if (data.currentId) {
+      currentIndex = playlist.findIndex(
+        song => song.id === data.currentId
+      );
+    }
+  } catch (error) {
+    console.error('Restore error:', error);
+  }
+}
+
+function renderPlaylist() {
+  playlistElement.innerHTML = '';
+
+  if (!playlist.length) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-playlist';
+    empty.textContent = 'Your playlist is waiting for music ☕';
+    playlistElement.appendChild(empty);
+    return;
+  }
+
+  playlist.forEach((song, index) => {
+    const item = document.createElement('div');
+    item.className = 'playlist-item';
+
+    if (index === currentIndex) item.classList.add('active');
+
+    const number = document.createElement('span');
+    number.className = 'song-number';
+    number.textContent = String(index + 1).padStart(2, '0');
+
+    const details = document.createElement('div');
+    details.className = 'song-details';
+
+    const title = document.createElement('div');
+    title.className = 'song-title';
+    title.textContent = song.title;
+
+    const type = document.createElement('div');
+    type.className = 'song-type';
+    type.textContent = song.local
+      ? 'LOCAL AUDIO'
+      : song.type === 'youtube' ? 'YOUTUBE' : 'AUDIO URL';
+
+    details.appendChild(title);
+    details.appendChild(type);
+
+    const indicator = document.createElement('span');
+    indicator.className = 'song-playing';
+    indicator.textContent = index === currentIndex ? '♫' : '';
+
+    const remove = document.createElement('button');
+    remove.className = 'remove-song';
+    remove.type = 'button';
+    remove.textContent = '×';
+    remove.title = 'Remove song';
+
+    remove.addEventListener('click', event => {
+      event.stopPropagation();
+      removeSong(index);
+    });
+
+    item.append(number, details, indicator, remove);
+
+    item.addEventListener('click', () => playSong(index, true));
+
+    playlistElement.appendChild(item);
+  });
 }
 
 function stopAudio() {
   audio.pause();
   audio.removeAttribute('src');
   audio.load();
-  releaseAudioURL();
 }
 
 function destroyYouTube() {
@@ -491,34 +733,81 @@ function destroyYouTube() {
 
   youtubePlayer = null;
   youtubeReady = false;
+
   document.getElementById('youtubePlayer').innerHTML = '';
   youtubeContainer.style.display = 'none';
 }
 
-function loadYouTube(videoId) {
+function playSong(index, autoplay = true, resumeAt = 0) {
+  if (index < 0 || index >= playlist.length) return;
+
+  const song = playlist[index];
+
   stopAudio();
   destroyYouTube();
 
-  currentSource = 'youtube';
-  pendingVideoId = videoId;
+  currentIndex = index;
+  currentSource = song.type;
+  savedPosition = resumeAt;
 
   resetProgress();
   setPlaying(false);
+  renderPlaylist();
 
-  album.style.display = 'none';
-  youtubeContainer.style.display = 'block';
+  document.getElementById('track').textContent = song.title;
+  document.getElementById('artist').textContent = song.artist || 'TAPRI FM';
 
-  document.getElementById('track').textContent = 'YouTube Session';
-  document.getElementById('artist').textContent = 'TAPRI RADIO';
+  if (song.type === 'youtube') {
+    album.style.display = 'none';
+    youtubeContainer.style.display = 'block';
 
-  setStatus('Connecting to YouTube...');
+    setStatus('Connecting to YouTube...');
 
-  if (apiReady) createYouTubePlayer(videoId);
+    if (apiReady) {
+      createYouTubePlayer(song.videoId, autoplay, resumeAt);
+    }
+  } else {
+    currentSource = 'audio';
+    album.style.display = 'grid';
+
+    audio.src = song.url;
+    audio.loop = looping;
+    audio.muted = muted;
+
+    const onMetadata = function() {
+      audio.removeEventListener('loadedmetadata', onMetadata);
+
+      if (currentIndex !== index) return;
+
+      duration.textContent = formatTime(audio.duration);
+
+      if (resumeAt > 0 && resumeAt < audio.duration) {
+        audio.currentTime = resumeAt;
+      }
+
+      if (autoplay) {
+        audio.play().catch(error => {
+          setStatus('Song ready. Press play to listen.');
+          console.error(error);
+        });
+      } else {
+        setStatus('Last song restored. Press play to resume.');
+      }
+
+      savedPosition = 0;
+    };
+
+    audio.addEventListener('loadedmetadata', onMetadata);
+    setStatus('Loading audio...');
+  }
+
+  savePlaylist();
 }
 
-function createYouTubePlayer(videoId) {
-  if (!apiReady || !pendingVideoId ||
-      pendingVideoId !== videoId ||
+function createYouTubePlayer(videoId, autoplay, resumeAt = 0) {
+  const song = getCurrentSong();
+
+  if (!apiReady || !song || song.videoId !== videoId ||
       currentSource !== 'youtube') return;
 
   youtubeReady = false;
@@ -526,39 +815,56 @@ function createYouTubePlayer(videoId) {
   youtubePlayer = new YT.Player('youtubePlayer', {
     width: '100%',
     height: '100%',
-    videoId: videoId,
+    videoId,
 
     playerVars: {
-      autoplay: 0,
+      autoplay: autoplay ? 1 : 0,
       controls: 1,
       playsinline: 1,
       rel: 0,
-      loop: looping ? 1 : 0,
-      playlist: videoId
+      origin: window.location.origin
     },
 
     events: {
       onReady: function(event) {
+        if (getCurrentSong() !== song) return;
+
         youtubeReady = true;
-        event.target.setVolume(muted ? 0 : 100);
-        setStatus('Video ready. Press play to listen.');
-        setPlaying(false);
+
+        if (muted) event.target.mute();
+        else event.target.unMute();
+
+        if (resumeAt > 0) {
+          event.target.seekTo(resumeAt, true);
+        }
+
+        if (autoplay) {
+          event.target.playVideo();
+        } else {
+          setStatus('Last song restored. Press play to resume.');
+        }
+
+        savedPosition = 0;
       },
 
       onStateChange: function(event) {
+        if (getCurrentSong() !== song) return;
+
         if (event.data === YT.PlayerState.PLAYING) {
           setPlaying(true);
           setStatus('Now playing · Tapri FM');
         } else if (event.data === YT.PlayerState.PAUSED) {
           setPlaying(false);
+          savePlaylist();
           setStatus('Music paused.');
         } else if (event.data === YT.PlayerState.ENDED) {
+          setPlaying(false);
+
           if (looping) {
             event.target.seekTo(0, true);
             event.target.playVideo();
           } else {
-            setPlaying(false);
-            setStatus('Session ended.');
+            playNext();
           }
         } else if (event.data === YT.PlayerState.BUFFERING) {
           setStatus('Buffering...');
@@ -566,19 +872,20 @@ function createYouTubePlayer(videoId) {
       },
 
       onError: function(event) {
+        if (getCurrentSong() !== song) return;
+
         setPlaying(false);
 
         const errors = {
           2: 'Invalid YouTube video ID.',
           5: 'HTML5 player error.',
-          100: 'Video not found or unavailable.',
+          100: 'Video unavailable.',
           101: 'Video owner does not allow embedding.',
           150: 'Video owner does not allow embedding.',
-          153: 'YouTube requires a valid website origin. Use HTTPS or localhost.'
+          153: 'YouTube requires a valid website origin.'
         };
 
-        setStatus(errors[event.data] ||
-          'YouTube playback error: ' + event.data);
+        setStatus(errors[event.data] || 'YouTube playback error: ' + event.data);
       }
     }
   });
@@ -587,23 +894,110 @@ function createYouTubePlayer(videoId) {
 window.onYouTubeIframeAPIReady = function() {
   apiReady = true;
 
-  if (pendingVideoId && currentSource === 'youtube') {
-    createYouTubePlayer(pendingVideoId);
+  const song = getCurrentSong();
+
+  if (song && song.type === 'youtube' && currentSource === 'youtube') {
+    createYouTubePlayer(song.videoId, false, savedPosition);
   }
 };
 
 const youtubeScript = document.createElement('script');
 youtubeScript.src = 'https://www.youtube.com/iframe_api';
 youtubeScript.async = true;
-
-youtubeScript.onerror = function() {
-  setStatus('Could not connect to YouTube. Check your internet.');
-};
-
+youtubeScript.onerror = () => setStatus('Could not connect to YouTube.');
 document.head.appendChild(youtubeScript);
 
-// Play / Pause
-playButton.addEventListener('click', async function() {
+function addSong(song) {
+  playlist.push(song);
+  renderPlaylist();
+  savePlaylist();
+
+  setStatus('Added: ' + song.title);
+
+  if (playlist.length === 1) {
+    playSong(0, true);
+  }
+}
+
+function playNext() {
+  if (!playlist.length) return;
+
+  if (currentIndex < playlist.length - 1) {
+    playSong(currentIndex + 1, true);
+  } else if (looping) {
+    playSong(0, true);
+  } else {
+    setPlaying(false);
+    setStatus('Playlist finished. Enjoy your chai ☕');
+  }
+}
+
+function playPrevious() {
+  if (!playlist.length) return;
+
+  if (getCurrentPosition() > 3) {
+    if (currentSource === 'youtube' && youtubeReady) {
+      youtubePlayer.seekTo(0, true);
+    } else if (currentSource === 'audio') {
+      audio.currentTime = 0;
+    }
+    return;
+  }
+
+  if (currentIndex > 0) {
+    playSong(currentIndex - 1, true);
+  } else if (looping) {
+    playSong(playlist.length - 1, true);
+  }
+}
+
+function removeSong(index) {
+  if (index < 0 || index >= playlist.length) return;
+
+  const wasCurrent = index === currentIndex;
+  const removed = playlist[index];
+
+  if (wasCurrent) {
+    stopAudio();
+    destroyYouTube();
+    setPlaying(false);
+  }
+
+  if (removed.objectURL) {
+    URL.revokeObjectURL(removed.objectURL);
+  }
+
+  playlist.splice(index, 1);
+
+  if (!playlist.length) {
+    currentIndex = -1;
+    currentSource = 'audio';
+    album.style.display = 'grid';
+
+    document.getElementById('track').textContent = 'Midnight Chai';
+    document.getElementById('artist').textContent = 'SOMEWHERE IN INDIA';
+
+    resetProgress();
+    setStatus('Your playlist is empty.');
+  } else if (wasCurrent) {
+    currentIndex = -1;
+    playSong(Math.min(index, playlist.length - 1), false);
+  } else {
+    if (index < currentIndex) currentIndex--;
+  }
+
+  renderPlaylist();
+  savePlaylist();
+}
+
+// Play and pause
+playButton.addEventListener('click', function() {
+  if (!getCurrentSong()) {
+    if (playlist.length) playSong(0, true);
+    else setStatus('Add a song to your playlist first.');
+    return;
+  }
+
   if (currentSource === 'youtube') {
     if (!youtubePlayer || !youtubeReady) {
       setStatus('Please wait for YouTube to load.');
@@ -615,21 +1009,13 @@ playButton.addEventListener('click', async function() {
     } else {
       youtubePlayer.playVideo();
     }
-
-    return;
-  }
-
-  if (!audio.src) {
-    setStatus('Choose an audio file or paste an audio URL first.');
     return;
   }
 
   if (audio.paused) {
-    try {
-      await audio.play();
-    } catch (error) {
+    audio.play().catch(error => {
       setStatus('Playback failed: ' + error.message);
-    }
+    });
   } else {
     audio.pause();
   }
@@ -643,10 +1029,13 @@ audio.addEventListener('play', function() {
 
 audio.addEventListener('pause', function() {
   setPlaying(false);
+  savePlaylist();
 });
 
 audio.addEventListener('loadedmetadata', function() {
-  duration.textContent = formatTime(audio.duration);
+  if (currentSource === 'audio') {
+    duration.textContent = formatTime(audio.duration);
+  }
 });
 
 audio.addEventListener('timeupdate', function() {
@@ -656,29 +1045,29 @@ audio.addEventListener('timeupdate', function() {
   current.textContent = formatTime(audio.currentTime);
 });
 
-audio.addEventListener('error', function() {
-  if (audio.src) {
-    setStatus('Audio loading failed. Check file format or URL.');
-  }
+audio.addEventListener('ended', function() {
+  if (!looping) playNext();
 });
 
-// Progress bar
+audio.addEventListener('error', function() {
+  if (audio.src) setStatus('Audio loading failed. Check the file or URL.');
+});
+
+// Progress
 progress.addEventListener('input', function() {
   if (currentSource === 'audio' && audio.duration) {
     audio.currentTime = progress.value / 100 * audio.duration;
-  } else if (currentSource === 'youtube' &&
-      youtubePlayer && youtubeReady) {
+  } else if (currentSource === 'youtube' && youtubeReady) {
     const total = youtubePlayer.getDuration();
-
     if (total) {
       youtubePlayer.seekTo(progress.value / 100 * total, true);
     }
   }
 });
 
+// YouTube progress
 setInterval(function() {
-  if (currentSource !== 'youtube' ||
-      !youtubePlayer || !youtubeReady) return;
+  if (currentSource !== 'youtube' || !youtubePlayer || !youtubeReady) return;
 
   const total = youtubePlayer.getDuration();
   const time = youtubePlayer.getCurrentTime();
@@ -696,12 +1085,8 @@ document.getElementById('loop').addEventListener('click', function() {
   audio.loop = looping;
 
   this.classList.toggle('active', looping);
-
-  if (youtubePlayer && youtubeReady) {
-    youtubePlayer.setLoop(looping);
-  }
-
   setStatus(looping ? 'Loop enabled.' : 'Loop disabled.');
+  savePlaylist();
 });
 
 // Mute
@@ -710,97 +1095,136 @@ document.getElementById('mute').addEventListener('click', function() {
   audio.muted = muted;
 
   if (youtubePlayer && youtubeReady) {
-    muted ? youtubePlayer.mute() : youtubePlayer.unMute();
+    if (muted) youtubePlayer.mute();
+    else youtubePlayer.unMute();
   }
 
   this.classList.toggle('active', muted);
+  savePlaylist();
 });
 
-// Local audio
+// Previous and next
+document.getElementById('previous').addEventListener('click', playPrevious);
+document.getElementById('next').addEventListener('click', playNext);
+
+// Local audio upload
 document.getElementById('file').addEventListener('change', function(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  destroyYouTube();
-  stopAudio();
+  const objectURL = URL.createObjectURL(file);
 
-  currentSource = 'audio';
-  pendingVideoId = null;
-  album.style.display = 'grid';
-
-  audioObjectURL = URL.createObjectURL(file);
-  audio.src = audioObjectURL;
-  audio.loop = looping;
-  audio.muted = muted;
-
-  document.getElementById('track').textContent = file.name;
-  document.getElementById('artist').textContent = 'YOUR MUSIC';
-
-  resetProgress();
-  setStatus('Loading your music...');
-
-  audio.play().catch(function(error) {
-    setStatus('Audio ready. Press play to start.');
-    console.error(error);
+  addSong({
+    id: generateId(),
+    type: 'audio',
+    url: objectURL,
+    title: file.name,
+    artist: 'YOUR MUSIC',
+    local: true,
+    objectURL
   });
+
+  event.target.value = '';
 });
 
-// Online URLs
+// Add online URL
 document.getElementById('urlForm').addEventListener('submit', function(event) {
   event.preventDefault();
 
-  const url = document.getElementById('url').value.trim();
+  const input = document.getElementById('url');
+  const url = input.value.trim();
+
   if (!url) return;
 
   const youtubeId = getYouTubeId(url);
 
   if (youtubeId) {
-    loadYouTube(youtubeId);
+    addSong({
+      id: generateId(),
+      type: 'youtube',
+      url,
+      videoId: youtubeId,
+      title: 'YouTube - ' + youtubeId,
+      artist: 'YOUTUBE · TAPRI FM',
+      local: false
+    });
+
+    input.value = '';
     return;
   }
 
-  if (/spotify\.com/i.test(url)) {
-    window.open(url, '_blank', 'noopener,noreferrer');
-    setStatus('Spotify opened in a new tab.');
-    return;
-  }
-
-  // Check file extension in URL pathname, ignoring query parameters.
   try {
     const parsed = new URL(url);
-    const pathname = parsed.pathname;
 
-    if (/\.(mp3|wav|ogg|m4a|aac)$/i.test(pathname)) {
-      destroyYouTube();
-      stopAudio();
-
-      currentSource = 'audio';
-      pendingVideoId = null;
-      album.style.display = 'grid';
-
-      audio.src = url;
-      audio.loop = looping;
-      audio.muted = muted;
-
-      document.getElementById('track').textContent = 'Your Music';
-      document.getElementById('artist').textContent = 'TAPRI FM';
-
-      resetProgress();
-      setStatus('Loading audio...');
-
-      audio.play().catch(function(error) {
-        setStatus('Audio ready. Press play. ' + error.message);
-      });
-
+    if (!['https:', 'http:'].includes(parsed.protocol)) {
+      setStatus('Use a valid HTTP or HTTPS URL.');
       return;
     }
+
+    if (/\.(mp3|wav|ogg|m4a|aac)$/i.test(parsed.pathname)) {
+      const filename = parsed.pathname.split('/').pop();
+
+      addSong({
+        id: generateId(),
+        type: 'audio',
+        url,
+        title: decodeURIComponent(filename || 'Online Audio'),
+        artist: 'ONLINE AUDIO · TAPRI FM',
+        local: false
+      });
+
+      input.value = '';
+      return;
+    }
+
+    setStatus('Unsupported link. Use YouTube or a direct audio URL.');
   } catch (error) {
     setStatus('Invalid URL.');
-    return;
   }
-
-  setStatus('Unsupported link. Use YouTube or a direct audio file URL.');
 });
+
+// Clear playlist
+document.getElementById('clearPlaylist').addEventListener('click', function() {
+  stopAudio();
+  destroyYouTube();
+
+  playlist.forEach(song => {
+    if (song.objectURL) URL.revokeObjectURL(song.objectURL);
+  });
+
+  playlist = [];
+  currentIndex = -1;
+  currentSource = 'audio';
+  savedPosition = 0;
+
+  album.style.display = 'grid';
+
+  document.getElementById('track').textContent = 'Midnight Chai';
+  document.getElementById('artist').textContent = 'SOMEWHERE IN INDIA';
+
+  resetProgress();
+  setPlaying(false);
+  renderPlaylist();
+  savePlaylist();
+
+  setStatus('Playlist cleared. Start fresh!');
+});
+
+// Save playback position every 3 seconds
+setInterval(function() {
+  if (getCurrentSong()) savePlaylist();
+}, 3000);
+
+// Restore saved playlist
+loadSavedPlaylist();
+renderPlaylist();
+
+if (currentIndex >= 0 && currentIndex < playlist.length) {
+  playSong(currentIndex, false, savedPosition);
+} else if (playlist.length) {
+  currentIndex = -1;
+  setStatus('Playlist restored. Choose a song.');
+}
 
 // Demo listener count
 setInterval(function() {
@@ -808,10 +1232,9 @@ setInterval(function() {
   let value = parseInt(count.textContent, 10);
 
   value += Math.floor(Math.random() * 3) - 1;
-
   count.textContent = value + ' people chilling here right now';
 }, 12000);
-</script>
 
+</script>
 </body>
 </html>
